@@ -2,74 +2,108 @@ package com.example.generatorbarcode
 
 import android.app.Activity
 import android.content.Intent
+import android.opengl.GLES30
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.generatorbarcode.databinding.ActivityMainBinding
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.card_layout.view.*
 import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var barcodeDb:BarcodeDatabase
+    private var listaEtiquetas= arrayListOf<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //viewBinding
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //end viewBinding
+        //toolbar
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        //end toolbar
+        //init db
+        barcodeDb=BarcodeDatabase.getDatabase(this)
+        //end db
 
-        val barcodeDb=BarcodeDatabase.getDatabase(this)
 
-
+        lifecycleScope.launch {
+            listaEtiquetas.addAll(barcodeDb.getBarcodeDao().getEtiquetas())
+        }
+            val adapter =ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line,listaEtiquetas)
+        binding.autoCompleteTextView.setAdapter(adapter)
 
 //        edittext numero
-        et_entrada.addTextChangedListener(object : TextWatcher {
+        binding.etEntrada.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
             }
             override fun afterTextChanged(s: Editable?) {
+                binding.inputetEntrada.layoutParams.width=ViewGroup.LayoutParams.WRAP_CONTENT
                 if (s!!.length == 12) {
                     for (num in 0..9) {
                         generatebarcode(num)
 
                             //--lower teclado
             val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(tv_codigo.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(textdescriocion.windowToken, 0)
                             //---
+                        binding.etEntrada.setSelection(binding.etEntrada.length())
                     }
-
+                    binding.textcodeend.visibility= View.VISIBLE
+                }else{
+                    binding.textcodeend.visibility= View.INVISIBLE
                 }
+
             }
 
         })
 //        fin editext
 
-        b_refresh.setOnClickListener {
-            et_entrada.text.clear()
+        binding.bRefresh.setOnClickListener {
+            binding.etEntrada.text?.clear()
         }
-        btn_save.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             //guardar
-            lifecycleScope.launch {
-                var newbar=BarcodeEntity(etiqueta= "dsdsd",valor= tv_codigo.text.toString().toLong())
-                barcodeDb.getBarcodeDao().saveBarcode(newbar)
-                val cant = barcodeDb.getBarcodeDao().getAllBarcode().size
-                tv_titulo.text=cant.toString()
-
+            if (et_entrada.length()==12) {
+                lifecycleScope.launch {
+                    var newbar = BarcodeEntity(
+                        etiqueta = binding.autoCompleteTextView.editableText.toString(),
+                        valor = (et_entrada.text.toString() + binding.textcodeend.text.toString()).toLong(),
+                        descripcion = binding.textdescriocion.text.toString()
+                    )
+                    barcodeDb.getBarcodeDao().saveBarcode(newbar)
+                }
+                binding.etEntrada.text?.clear()
+                binding.textdescriocion.text?.clear()
+                binding.autoCompleteTextView.text?.clear()
+            }else{
+                Toast.makeText(this@MainActivity, "el campo debe estar lleno", Toast.LENGTH_SHORT).show()
             }
+        }
 
-        }
-        btn_list.setOnClickListener {
-            val intent = Intent(this, ListActivity::class.java).apply {
 
-            }
-            startActivity(intent)
-        }
-        }
+    }
+
 
     private fun generatebarcode(i :Int){
         try {
@@ -77,13 +111,31 @@ class MainActivity : AppCompatActivity() {
             val bitmap = barcodeEncoder.encodeBitmap(
                 et_entrada.text.toString()+""+i,
                 BarcodeFormat.EAN_13,
-                800,
+                700,
                 400
             )
                 imagcode.setImageBitmap(bitmap)
-                tv_codigo.text =et_entrada.text.toString()+""+i
+                textcodeend.text=i.toString()
+                //et_entrada.setText(et_entrada.text.toString()+""+i)
+
         } catch (e: Exception) {
             //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
         }
     }
+    //Toolbar and menu
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId)
+        {
+            R.id.itemlist -> {val intent = Intent(this, ListActivity::class.java).apply {}
+            startActivity(intent)}
+            R.id.itemabout -> {Toast.makeText(this,"creado por Jef1023",Toast.LENGTH_SHORT).show()}
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    // end toolbar and menu
 }

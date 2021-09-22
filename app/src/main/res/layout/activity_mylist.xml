@@ -6,25 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".ListActivity">
 
-    <TextView
-        android:id="@+id/textmylist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.068" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerID"
-        android:layout_width="405dp"
-        android:layout_height="550dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textmylist"
-        app:layout_constraintVertical_bias="0.491" />
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+    <SearchView
+        android:id="@+id/searchView"
+        style="@android:style/Widget.Material.Light.SearchView"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="#D11616"
+        android:closeIcon="@android:drawable/ic_menu_close_clear_cancel"
+        android:commitIcon="@android:drawable/ic_menu_search"
+        android:queryHint="Buscar..."
+        android:searchIcon="@android:drawable/ic_menu_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

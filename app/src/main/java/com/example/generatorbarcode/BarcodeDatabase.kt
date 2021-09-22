@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    version = 3,
+    version = 1,
     entities = [BarcodeEntity::class],
     exportSchema = true
 )
@@ -22,7 +24,7 @@ abstract class BarcodeDatabase: RoomDatabase(){
                 return tempInstance
             }
             synchronized(this){
-                val instance= Room.databaseBuilder(context,BarcodeDatabase::class.java,"barcode-db").build()
+                val instance= Room.databaseBuilder(context,BarcodeDatabase::class.java,"barcode2-db").build()
 
                 INSTANCE= instance
 

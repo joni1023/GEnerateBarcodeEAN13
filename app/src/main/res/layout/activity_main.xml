@@ -7,91 +7,140 @@
     tools:context=".MainActivity">
 
 
-    <EditText
-        android:id="@+id/et_entrada"
-        android:layout_width="193dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="36dp"
-        android:ems="10"
-        android:hint="@string/codigo"
-        android:inputType="number"
-        android:maxLength="13"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_titulo" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputet_entrada"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="@string/ingreseCodigo"
+        android:minWidth="100sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/imagcode">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_entrada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:focusable="auto"
+            android:inputType="number"
+            android:letterSpacing="0.2"
+            android:maxLength="12"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/imagcode"
-        android:layout_width="289dp"
-        android:layout_height="173dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="260dp"
+        android:layout_height="129dp"
+        android:layout_marginTop="32dp"
         android:background="#FFFFFF"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.451"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_entrada"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:srcCompat="@mipmap/ic_launcher_foreground" />
 
-    <TextView
-        android:id="@+id/tv_codigo"
-        android:layout_width="258dp"
-        android:layout_height="42dp"
-        android:text="@string/codigo"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagcode"
-        app:layout_constraintVertical_bias="0.06" />
 
-    <TextView
-        android:id="@+id/tv_titulo"
-        android:layout_width="313dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="28dp"
-        android:text="@string/titulo"
-        android:textSize="18sp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <Button
-        android:id="@+id/b_refresh"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="57dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="36dp"
-        android:drawableLeft="@android:drawable/ic_popup_sync"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_entrada"
-        app:layout_constraintTop_toBottomOf="@+id/tv_titulo" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputTextDescripcion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/descripcion"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/inputet_entrada">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textdescriocion"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="guardar"
+
+        android:layout_width="162dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="32dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:drawableRight="@android:drawable/ic_menu_save"
+        android:text="@string/guardar"
+        android:textColor="@color/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.761"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_codigo"
-        app:layout_constraintVertical_bias="0.086" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView"
+        app:layout_constraintVertical_bias="0.142" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:completionThreshold="1"
+        android:hint="etiqueta"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/inputTextDescripcion" />
 
     <Button
-        android:id="@+id/btn_list"
+        android:id="@+id/b_refresh"
+        android:layout_width="162dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:drawableRight="@android:drawable/stat_notify_sync"
+        android:text="limpiar"
+        android:textColor="@color/ic_launcher_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_save"
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView"
+        app:layout_constraintVertical_bias="0.142" />
+
+    <TextView
+        android:id="@+id/textcodeend"
+        android:layout_width="23dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="?"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/inputet_entrada"
+        app:layout_constraintTop_toBottomOf="@+id/imagcode" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="240dp"
-        android:text="mylist"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_save"
-        app:layout_constraintHorizontal_bias="0.55"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="60dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="60dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
