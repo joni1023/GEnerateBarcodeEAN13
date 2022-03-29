@@ -6,14 +6,11 @@
 
     <item
         android:id="@+id/itemlist"
-        android:title="lista"
-        android:icon="@drawable/ic_custom_list"
-        app:showAsAction="ifRoom"
-        />
+        android:icon="@drawable/ic_barcode_list"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/itemabout"
+        android:icon="@drawable/ic_barcode_about"
         android:title="about"
-        android:icon="@android:drawable/ic_dialog_info"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
 </menu>

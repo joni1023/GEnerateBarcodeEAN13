@@ -1,9 +1,8 @@
 package com.example.generatorbarcode
 
-import android.app.Activity
 import android.content.Intent
-import android.opengl.GLES30
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
@@ -15,17 +14,23 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.ajts.androidmads.library.SQLiteToExcel
+import com.ajts.androidmads.library.SQLiteToExcel.ExportListener
 import com.example.generatorbarcode.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.card_layout.view.*
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var barcodeDb:BarcodeDatabase
     private var listaEtiquetas= arrayListOf<String>()
+    lateinit var sqliteToExcel: SQLiteToExcel
+    var directory_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         //end db
 
 
+
         lifecycleScope.launch {
             listaEtiquetas.addAll(barcodeDb.getBarcodeDao().getEtiquetas())
         }
@@ -58,16 +64,15 @@ class MainActivity : AppCompatActivity() {
 
             }
             override fun afterTextChanged(s: Editable?) {
-                binding.inputetEntrada.layoutParams.width=ViewGroup.LayoutParams.WRAP_CONTENT
                 if (s!!.length == 12) {
                     for (num in 0..9) {
                         generatebarcode(num)
 
                             //--lower teclado
-            val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(textdescriocion.windowToken, 0)
                             //---
-                        binding.etEntrada.setSelection(binding.etEntrada.length())
+//                        binding.etEntrada.setSelection(binding.etEntrada.length())
                     }
                     binding.textcodeend.visibility= View.VISIBLE
                 }else{
@@ -82,14 +87,15 @@ class MainActivity : AppCompatActivity() {
         binding.bRefresh.setOnClickListener {
             binding.etEntrada.text?.clear()
         }
+
         binding.btnSave.setOnClickListener {
             //guardar
             if (et_entrada.length()==12) {
                 lifecycleScope.launch {
                     var newbar = BarcodeEntity(
                         etiqueta = binding.autoCompleteTextView.editableText.toString(),
-                        valor = (et_entrada.text.toString() + binding.textcodeend.text.toString()).toLong(),
-                        descripcion = binding.textdescriocion.text.toString()
+                        valor = (text_codigo.text.toString()).toLong(),
+                        descripcion = binding.textdescriocion.text.toString(),
                     )
                     barcodeDb.getBarcodeDao().saveBarcode(newbar)
                 }
@@ -115,8 +121,7 @@ class MainActivity : AppCompatActivity() {
                 400
             )
                 imagcode.setImageBitmap(bitmap)
-                textcodeend.text=i.toString()
-                //et_entrada.setText(et_entrada.text.toString()+""+i)
+                text_codigo.text=(et_entrada.text.toString()+""+i)
 
         } catch (e: Exception) {
             //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
@@ -133,7 +138,12 @@ class MainActivity : AppCompatActivity() {
         {
             R.id.itemlist -> {val intent = Intent(this, ListActivity::class.java).apply {}
             startActivity(intent)}
-            R.id.itemabout -> {Toast.makeText(this,"creado por Jef1023",Toast.LENGTH_SHORT).show()}
+            R.id.itemabout -> {
+                MaterialAlertDialogBuilder(this).setTitle("Desarrollado por:")
+                    .setMessage("JEF1023")
+
+                    .show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

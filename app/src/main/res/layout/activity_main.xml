@@ -9,14 +9,15 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputet_entrada"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:hint="@string/ingreseCodigo"
         android:minWidth="100sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/imagcode">
+        app:layout_constraintTop_toBottomOf="@+id/text_codigo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_entrada"
@@ -66,7 +67,8 @@
         android:hint="@string/descripcion"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/inputet_entrada">
+        app:layout_constraintTop_toBottomOf="@+id/inputet_entrada"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textdescriocion"
@@ -78,29 +80,35 @@
 
     <Button
         android:id="@+id/btn_save"
-
+        android:text="@string/guardar"
         android:layout_width="162dp"
         android:layout_height="45dp"
         android:layout_marginStart="32dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:drawableRight="@android:drawable/ic_menu_save"
-        android:text="@string/guardar"
-        android:textColor="@color/ic_launcher_background"
+        app:icon="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView"
+        app:layout_constraintTop_toBottomOf="@+id/imputAutocomplete"
         app:layout_constraintVertical_bias="0.142" />
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/imputAutocomplete"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:completionThreshold="1"
-        android:hint="etiqueta"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/inputTextDescripcion" />
+        app:layout_constraintTop_toBottomOf="@+id/inputTextDescripcion">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:completionThreshold="1"
+            android:hint="etiqueta" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/b_refresh"
@@ -108,12 +116,12 @@
         android:layout_height="45dp"
         android:backgroundTint="@color/colorPrimary"
         android:drawableRight="@android:drawable/stat_notify_sync"
-        android:text="limpiar"
+        android:text="@string/reset"
         android:textColor="@color/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_save"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView"
+        app:layout_constraintTop_toBottomOf="@+id/imputAutocomplete"
         app:layout_constraintVertical_bias="0.142" />
 
     <TextView
@@ -142,5 +150,15 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="60dp" />
 
+    <TextView
+        android:id="@+id/text_codigo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_down_cod"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/imagcode" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

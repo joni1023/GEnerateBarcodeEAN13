@@ -12,21 +12,26 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
 
-    <SearchView
-        android:id="@+id/searchView"
-        style="@android:style/Widget.Material.Light.SearchView"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:background="#D11616"
-        android:closeIcon="@android:drawable/ic_menu_close_clear_cancel"
-        android:commitIcon="@android:drawable/ic_menu_search"
-        android:queryHint="Buscar..."
-        android:searchIcon="@android:drawable/ic_menu_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:menu="@menu/menulist"
+        app:title="Codigos"
+        tools:layout_editor_absoluteX="-7dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

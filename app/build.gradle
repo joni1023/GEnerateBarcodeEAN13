@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.2"
 
     defaultConfig {
@@ -54,7 +54,7 @@ dependencies {
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation "androidx.cardview:cardview:1.0.0"
-
+    implementation 'com.ajts.androidmads.SQLite2Excel:library:1.0.4'
 
     def room_version = "2.2.6"
 
@@ -65,6 +65,8 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    implementation 'com.google.android.material:material:1.6.0-alpha03'
 
     def lifecycle_version = "2.3.1"
     def arch_version = "2.1.0"

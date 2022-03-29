@@ -16,8 +16,7 @@
         <TextView
             android:id="@+id/text_label"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="14dp"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
             android:paddingStart="10dp"
@@ -28,10 +27,12 @@
             android:textColor="#E83131"
             android:textIsSelectable="false"
             android:textSize="10sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.064"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_description" />
+            app:layout_constraintTop_toBottomOf="@+id/text_description"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/img_cod"
@@ -47,17 +48,49 @@
             tools:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/text_description"
+            android:id="@+id/text_cod"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="none"
             android:paddingStart="10dp"
             android:singleLine="true"
-            android:text="description"
+            android:text="7798107941112"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_cod" />
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:text="Description"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_cod" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="82dp" />
+
+        <ImageButton
+            android:id="@+id/btn_icon_delete"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#FAF9F9"
+            android:src="@android:drawable/ic_menu_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/text_cod"
+            app:layout_constraintVertical_bias="1.0" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
