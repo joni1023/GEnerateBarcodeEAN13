@@ -4,18 +4,19 @@
 
     <item
         android:id="@+id/app_bar_search"
-        android:icon="@drawable/ic_custom_search"
+        android:icon="@drawable/ic_search"
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
+
         app:showAsAction="always" />
     <item
         android:id="@+id/importDB"
-        android:icon="@drawable/ic_custom_import"
+        android:icon="@drawable/ic_import"
         android:title="importar"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/exportDB"
-        android:icon="@drawable/ic_custom_export"
+        android:icon="@drawable/ic_export"
         android:title="Exportar"
         app:showAsAction="ifRoom" />
 </menu>

@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface BarcodeDao {
     @Query("SELECT * FROM barcode")
-    suspend fun getAllBarcode():List<BarcodeEntity>
+    suspend fun getAllBarcode():MutableList<BarcodeEntity>
     @Insert
     suspend fun saveBarcode(barcode:BarcodeEntity)
     @Query("SELECT DISTINCT etiqueta FROM barcode")

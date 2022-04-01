@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">genera cod ean13</string>
+    <string name="app_name">Generador Codigo EAN13</string>
     <string name="codigo">123456789123</string>
     <string name="titulo">ingresa el codigo de barras</string>
     <string name="title_activity_listactivity">listactivity</string>
+    <string name="channel_name">GCEAN13-Exportar</string>
+    <string name="channel_description">Notifica al usuario cunado ha finalizado la exportación de la Base de datos</string>
 
-
+    <string name="title_notification">Generador Codigo EAN13 - Notificaciones</string>
+    <string name="description_notificatiom">Ha finalizado la exportacion el archivo export_cod.xls se encuentra en la carpeta de Descarga</string>
     <string-array name="opciones">
         <item>Ferreteria</item>
         <item>Electricidad</item>
@@ -20,5 +23,6 @@
     <string name="guardar">Guardar</string>
     <string name="text_down_cod">G3N3R4 7U C0D1G0</string>
     <string name="reset">Resetear</string>
+    <string name="completar">Debe completar este campo</string>
 
 </resources>

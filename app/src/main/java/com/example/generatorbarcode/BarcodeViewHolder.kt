@@ -4,16 +4,21 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.*
+import com.example.generatorbarcode.adapter.BarcodeAdapter
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class BarcodeViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
+
+class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
     val itemDescripcion = itemView.findViewById<TextView>(R.id.text_description)
     val itemEtiqueta =itemView.findViewById<TextView>(R.id.text_label)
     val itemImage= itemView.findViewById<ImageView>(R.id.img_cod)
     val itemCod=itemView.findViewById<TextView>(R.id.text_cod)
-    val btnDelete = itemView.findViewById<ImageButton>(R.id.btn_icon_delete)
 
     fun render(barcodeModel :BarcodeEntity){
         itemDescripcion.text = barcodeModel.descripcion
@@ -27,7 +32,7 @@ class BarcodeViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
             60
         )
         itemImage.setImageBitmap(bitmap)
-        
 
     }
+
 }

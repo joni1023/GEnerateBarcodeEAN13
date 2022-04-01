@@ -25,8 +25,8 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:focusable="auto"
+            android:textColor="@color/mr_cast_meta_black_scrim"
             android:inputType="number"
-            android:letterSpacing="0.2"
             android:maxLength="12"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -75,20 +75,22 @@
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:inputType="text"
+            android:textColor="@color/mr_cast_meta_black_scrim"
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btn_save"
-        android:text="@string/guardar"
-        android:layout_width="162dp"
+        android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="4dp"
+        android:scaleType="fitXY"
+        android:text="@string/guardar"
         app:icon="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/imputAutocomplete"
-        app:layout_constraintVertical_bias="0.142" />
+        app:layout_constraintVertical_bias="0.084" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/imputAutocomplete"
@@ -104,6 +106,7 @@
             android:id="@+id/autoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/mr_cast_meta_black_scrim"
             android:completionThreshold="1"
             android:hint="etiqueta" />
 
@@ -112,43 +115,29 @@
 
     <Button
         android:id="@+id/b_refresh"
-        android:layout_width="162dp"
+        android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:backgroundTint="@color/colorPrimary"
         android:drawableRight="@android:drawable/stat_notify_sync"
         android:text="@string/reset"
-        android:textColor="@color/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_save"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/imputAutocomplete"
-        app:layout_constraintVertical_bias="0.142" />
-
-    <TextView
-        android:id="@+id/textcodeend"
-        android:layout_width="23dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="?"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/inputet_entrada"
-        app:layout_constraintTop_toBottomOf="@+id/imagcode" />
+        app:layout_constraintVertical_bias="0.084" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="60dp" />
+        app:layout_constraintGuide_begin="32dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="60dp" />
+        app:layout_constraintGuide_end="31dp" />
 
     <TextView
         android:id="@+id/text_codigo"
@@ -160,5 +149,21 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/imagcode" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-5651299711700919/1540066356"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/b_refresh"
+        app:layout_constraintVertical_bias="0.032"></com.google.android.gms.ads.AdView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,14 @@
 package com.example.generatorbarcode
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
@@ -13,10 +21,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.ajts.androidmads.library.SQLiteToExcel
 import com.ajts.androidmads.library.SQLiteToExcel.ExportListener
 import com.example.generatorbarcode.databinding.ActivityMainBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -24,21 +36,28 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.card_layout.view.*
 import kotlinx.coroutines.launch
 import java.io.File
+import com.google.android.gms.ads.MobileAds
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var barcodeDb:BarcodeDatabase
     private var listaEtiquetas= arrayListOf<String>()
     lateinit var sqliteToExcel: SQLiteToExcel
+    lateinit var mAdView : AdView
     var directory_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+    val CHANNEL_ID = "ANDROID_CHANEL"
+    val REQUESTCODE = 200;
+    lateinit var binding : ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //viewBinding
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         //end viewBinding
+        verificarPermisos()
         //toolbar
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -46,8 +65,10 @@ class MainActivity : AppCompatActivity() {
         //init db
         barcodeDb=BarcodeDatabase.getDatabase(this)
         //end db
-
-
+        MobileAds.initialize(this) {}
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
         lifecycleScope.launch {
             listaEtiquetas.addAll(barcodeDb.getBarcodeDao().getEtiquetas())
@@ -72,42 +93,63 @@ class MainActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(textdescriocion.windowToken, 0)
                             //---
-//                        binding.etEntrada.setSelection(binding.etEntrada.length())
                     }
-                    binding.textcodeend.visibility= View.VISIBLE
-                }else{
-                    binding.textcodeend.visibility= View.INVISIBLE
+
                 }
 
             }
 
         })
-//        fin editext
+        //fin editext
 
         binding.bRefresh.setOnClickListener {
-            binding.etEntrada.text?.clear()
+            resetFields()
         }
 
         binding.btnSave.setOnClickListener {
             //guardar
             if (et_entrada.length()==12) {
-                lifecycleScope.launch {
-                    var newbar = BarcodeEntity(
-                        etiqueta = binding.autoCompleteTextView.editableText.toString(),
-                        valor = (text_codigo.text.toString()).toLong(),
-                        descripcion = binding.textdescriocion.text.toString(),
-                    )
-                    barcodeDb.getBarcodeDao().saveBarcode(newbar)
+                if(binding.textdescriocion.text?.isEmpty() == false){
+
+                    lifecycleScope.launch {
+                        var newbar = BarcodeEntity(
+                            etiqueta = binding.autoCompleteTextView.editableText.toString(),
+                            valor = (text_codigo.text.toString()).toLong(),
+                            descripcion = binding.textdescriocion.text.toString(),
+                        )
+                        barcodeDb.getBarcodeDao().saveBarcode(newbar)
+                    }
+                    resetFields()
+
+                }else{
+                    binding.textdescriocion.error = getString(R.string.completar)
                 }
-                binding.etEntrada.text?.clear()
-                binding.textdescriocion.text?.clear()
-                binding.autoCompleteTextView.text?.clear()
+
             }else{
-                Toast.makeText(this@MainActivity, "el campo debe estar lleno", Toast.LENGTH_SHORT).show()
+                binding.etEntrada.error =getString(R.string.ingreseCodigo)
+
             }
         }
 
 
+    }
+
+    private fun resetFields() {
+        binding.etEntrada.text?.clear()
+        binding.textdescriocion.text?.clear()
+        binding.autoCompleteTextView.text?.clear()
+        binding.imagcode.setImageResource(R.mipmap.ic_launcher_foreground)
+        binding.textCodigo.text = getString(R.string.text_down_cod)
+    }
+
+    private fun verificarPermisos() {
+        val permisoWrite = ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permisoRead = ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(permisoWrite == PackageManager.PERMISSION_GRANTED && permisoRead == PackageManager.PERMISSION_GRANTED ) {
+
+        }else{
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE),REQUESTCODE);
+        }
     }
 
 
@@ -124,9 +166,10 @@ class MainActivity : AppCompatActivity() {
                 text_codigo.text=(et_entrada.text.toString()+""+i)
 
         } catch (e: Exception) {
-            //Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
         }
     }
+
     //Toolbar and menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -136,16 +179,39 @@ class MainActivity : AppCompatActivity() {
 
         when(item.itemId)
         {
-            R.id.itemlist -> {val intent = Intent(this, ListActivity::class.java).apply {}
-            startActivity(intent)}
+            R.id.itemlist -> {
+                val intent = Intent(this, ListActivity::class.java).apply {}
+            startActivity(intent)
+            }
             R.id.itemabout -> {
-                MaterialAlertDialogBuilder(this).setTitle("Desarrollado por:")
-                    .setMessage("JEF1023")
+                MaterialAlertDialogBuilder(this).setTitle("Generador Código EAN13")
+                    .setMessage("Desarrollado por JEF1023"+"\n"+"version: 2.0"+"\n"+"Gracias por elegirnos")
+                    .setIcon(R.mipmap.ic_launcher_barcode_round)
+                    .setPositiveButton("Compartir"){ dialog, which ->
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "https://play.google.com/store/apps/details?id=com.jef1023.generatorbarcode"
+                            )
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    }
+                    .setNeutralButton("Calificar"){dialog, which ->
+                        try {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                        } catch (e: ActivityNotFoundException) {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                        }
 
+                    }
                     .show()
             }
         }
         return super.onOptionsItemSelected(item)
     }
     // end toolbar and menu
+
 }
