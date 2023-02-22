@@ -1,46 +1,38 @@
-package com.example.generatorbarcode
+package com.example.generatorbarcode.ui
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.ajts.androidmads.library.SQLiteToExcel
-import com.ajts.androidmads.library.SQLiteToExcel.ExportListener
+import com.example.generatorbarcode.R
+import com.example.generatorbarcode.data.database.BarcodeDatabase
+import com.example.generatorbarcode.data.model.BarcodeEntity
 import com.example.generatorbarcode.databinding.ActivityMainBinding
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.card_layout.view.*
 import kotlinx.coroutines.launch
-import java.io.File
 import com.google.android.gms.ads.MobileAds
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var barcodeDb:BarcodeDatabase
+    private lateinit var barcodeDb: BarcodeDatabase
     private var listaEtiquetas= arrayListOf<String>()
     lateinit var sqliteToExcel: SQLiteToExcel
     lateinit var mAdView : AdView
@@ -63,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         //end toolbar
         //init db
-        barcodeDb=BarcodeDatabase.getDatabase(this)
+        barcodeDb= BarcodeDatabase.getDatabase(this)
         //end db
         MobileAds.initialize(this) {}
         mAdView = findViewById(R.id.adView)

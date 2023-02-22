@@ -1,11 +1,10 @@
-package com.example.generatorbarcode
+package com.example.generatorbarcode.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.generatorbarcode.data.model.BarcodeEntity
 
 @Database(
     version = 1,
@@ -13,20 +12,20 @@ import androidx.sqlite.db.SupportSQLiteDatabase
     exportSchema = true
 )
 abstract class BarcodeDatabase: RoomDatabase(){
-    abstract fun getBarcodeDao():BarcodeDao
+    abstract fun getBarcodeDao(): BarcodeDao
 
     companion object{
         @Volatile
-        private var INSTANCE:BarcodeDatabase?=null
-        fun getDatabase(context: Context):BarcodeDatabase{
+        private var INSTANCE: BarcodeDatabase?=null
+        fun getDatabase(context: Context): BarcodeDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null){
                 return tempInstance
             }
             synchronized(this){
-                val instance= Room.databaseBuilder(context,BarcodeDatabase::class.java,"barcode2-db").build()
+                val instance= Room.databaseBuilder(context, BarcodeDatabase::class.java,"barcode2-db").build()
 
-                INSTANCE= instance
+                INSTANCE = instance
 
                 return instance
             }

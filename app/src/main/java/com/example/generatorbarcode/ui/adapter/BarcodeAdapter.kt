@@ -1,12 +1,10 @@
-package com.example.generatorbarcode.adapter
+package com.example.generatorbarcode.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.generatorbarcode.BarcodeEntity
-import com.example.generatorbarcode.BarcodeViewHolder
+import com.example.generatorbarcode.data.model.BarcodeEntity
+import com.example.generatorbarcode.core.BarcodeViewHolder
 import com.example.generatorbarcode.R
 
 class BarcodeAdapter (val barcodeList: List<BarcodeEntity>): RecyclerView.Adapter<BarcodeViewHolder>() {

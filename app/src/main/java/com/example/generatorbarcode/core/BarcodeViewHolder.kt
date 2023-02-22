@@ -1,17 +1,13 @@
-package com.example.generatorbarcode
+package com.example.generatorbarcode.core
 
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.example.generatorbarcode.adapter.BarcodeAdapter
+import com.example.generatorbarcode.R
+import com.example.generatorbarcode.data.model.BarcodeEntity
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
@@ -20,7 +16,7 @@ class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
     val itemImage= itemView.findViewById<ImageView>(R.id.img_cod)
     val itemCod=itemView.findViewById<TextView>(R.id.text_cod)
 
-    fun render(barcodeModel :BarcodeEntity){
+    fun render(barcodeModel : BarcodeEntity){
         itemDescripcion.text = barcodeModel.descripcion
         itemEtiqueta.text = barcodeModel.etiqueta
         itemCod.text = barcodeModel.valor.toString()

@@ -1,12 +1,10 @@
-package com.example.generatorbarcode
+package com.example.generatorbarcode.ui
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,7 +14,6 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -26,13 +23,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ajts.androidmads.library.ExcelToSQLite
 import com.ajts.androidmads.library.ExcelToSQLite.ImportListener
 import com.ajts.androidmads.library.SQLiteToExcel
-import com.example.generatorbarcode.adapter.BarcodeAdapter
+import com.example.generatorbarcode.R
+import com.example.generatorbarcode.core.SwipeToDeleteCallback
+import com.example.generatorbarcode.ui.adapter.BarcodeAdapter
+import com.example.generatorbarcode.data.database.BarcodeDao
+import com.example.generatorbarcode.data.database.BarcodeDatabase
+import com.example.generatorbarcode.data.model.BarcodeEntity
 import com.example.generatorbarcode.databinding.ActivityMylistBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_mylist.*
-import kotlinx.android.synthetic.main.card_layout.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -41,7 +42,7 @@ import java.io.File
 class ListActivity : AppCompatActivity() {
     private val CHANNEL_ID = "GeneradorEAN13"
     private lateinit var barcodeDao : BarcodeDao
-    private lateinit var barcodeadpater:BarcodeAdapter
+    private lateinit var barcodeadpater: BarcodeAdapter
     private lateinit var listaoriginal:MutableList<BarcodeEntity>
     private lateinit var myrecycler:RecyclerView
     lateinit var sqliteToExcel: SQLiteToExcel

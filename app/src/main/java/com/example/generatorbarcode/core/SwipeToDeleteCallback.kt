@@ -1,4 +1,4 @@
-package com.example.generatorbarcode
+package com.example.generatorbarcode.core
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
