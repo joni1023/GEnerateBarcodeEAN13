@@ -56,6 +56,7 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'com.ajts.androidmads.SQLite2Excel:library:1.0.4'
 
+
     def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"

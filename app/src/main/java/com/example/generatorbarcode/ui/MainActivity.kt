@@ -29,6 +29,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import com.google.android.gms.ads.MobileAds
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         //viewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
