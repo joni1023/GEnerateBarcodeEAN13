@@ -12,7 +12,7 @@ class BarcodeAdapter (val barcodeList: List<BarcodeEntity>): RecyclerView.Adapte
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarcodeViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.card_layout,parent,false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.card_layout_new,parent,false)
 
         return BarcodeViewHolder(v)
     }

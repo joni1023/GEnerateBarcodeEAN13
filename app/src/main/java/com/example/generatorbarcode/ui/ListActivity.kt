@@ -63,6 +63,7 @@ class ListActivity : AppCompatActivity() {
     setSupportActionBar(binding.topAppBar)
     supportActionBar?.setDisplayShowTitleEnabled(false)
     //end toolbar
+
     listaoriginal= mutableListOf()
     val barcodeDB = BarcodeDatabase.getDatabase(this)
     barcodeDao = barcodeDB.getBarcodeDao()

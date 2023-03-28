@@ -10,25 +10,24 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputet_entrada"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="267dp"
+        android:layout_height="60dp"
         android:layout_marginTop="16dp"
         android:hint="@string/ingreseCodigo"
         android:minWidth="100sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/text_codigo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_entrada"
-            android:layout_width="match_parent"
+            android:layout_width="264dp"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:focusable="auto"
-            android:textColor="@color/mr_cast_meta_black_scrim"
             android:inputType="number"
             android:maxLength="12"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/mr_cast_meta_black_scrim" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
@@ -83,14 +82,14 @@
         android:id="@+id/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         android:scaleType="fitXY"
         android:text="@string/guardar"
         app:icon="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/imputAutocomplete"
-        app:layout_constraintVertical_bias="0.084" />
+        app:layout_constraintVertical_bias="0.085" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/imputAutocomplete"
@@ -164,6 +163,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/b_refresh"
         app:layout_constraintVertical_bias="0.032"></com.google.android.gms.ads.AdView>
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="28dp"
+        android:background="#F44336"
+        android:scaleType="center"
+        android:tint="#FAFAFA"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toEndOf="@+id/inputet_entrada"
+        app:layout_constraintTop_toBottomOf="@+id/text_codigo"
+        app:srcCompat="?attr/actionModeShareDrawable" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

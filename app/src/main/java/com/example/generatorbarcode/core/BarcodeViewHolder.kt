@@ -11,10 +11,10 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
 class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
-    val itemDescripcion = itemView.findViewById<TextView>(R.id.text_description)
-    val itemEtiqueta =itemView.findViewById<TextView>(R.id.text_label)
-    val itemImage= itemView.findViewById<ImageView>(R.id.img_cod)
-    val itemCod=itemView.findViewById<TextView>(R.id.text_cod)
+    val itemDescripcion = itemView.findViewById<TextView>(R.id.cl_text_description)
+    val itemEtiqueta =itemView.findViewById<TextView>(R.id.cl_text_label)
+    val itemImage= itemView.findViewById<ImageView>(R.id.cl_img_cod)
+    val itemCod=itemView.findViewById<TextView>(R.id.cl_text_cod)
 
     fun render(barcodeModel : BarcodeEntity){
         itemDescripcion.text = barcodeModel.descripcion

@@ -1,20 +1,26 @@
 package com.example.generatorbarcode.ui
 
 import android.Manifest
-import android.content.ActivityNotFoundException
-import android.content.Intent
+import android.app.Activity
+import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.preference.PreferenceManager
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.ajts.androidmads.library.SQLiteToExcel
 import com.example.generatorbarcode.R
@@ -23,13 +29,14 @@ import com.example.generatorbarcode.data.model.BarcodeEntity
 import com.example.generatorbarcode.databinding.ActivityMainBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
-import com.google.android.gms.ads.MobileAds
-import kotlin.concurrent.thread
+import java.io.File
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,7 +47,10 @@ class MainActivity : AppCompatActivity() {
     var directory_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
     val CHANNEL_ID = "ANDROID_CHANEL"
     val REQUESTCODE = 200;
+    private val COMPARTIR_REQUEST_CODE = 123
     lateinit var binding : ActivityMainBinding
+    lateinit var myprefrences: SharedPreferences
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         //viewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        myprefrences= this.getSharedPreferences("sa",Context.MODE_PRIVATE) ?: return
 
         //end viewBinding
         verificarPermisos()
@@ -99,6 +110,9 @@ class MainActivity : AppCompatActivity() {
         binding.bRefresh.setOnClickListener {
             resetFields()
         }
+        binding.shareButton.setOnClickListener {
+            shareBarcode()
+        }
 
         binding.btnSave.setOnClickListener {
             //guardar
@@ -126,14 +140,65 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == COMPARTIR_REQUEST_CODE) {
+
+            var path =myprefrences.getString("myUri",null)
+                val uri = Uri.parse(path)
+                // Obtener la ruta real de la imagen
+                val cursor = uri?.let { contentResolver.query(it, null, null, null, null) }
+                cursor?.moveToFirst()
+                val realPath = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+                cursor?.close()
+
+// Eliminar la imagen
+                if (realPath != null) {
+                    val file = File(realPath)
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                }
+
+        }
+    }
     private fun resetFields() {
         binding.etEntrada.text?.clear()
         binding.textdescriocion.text?.clear()
         binding.autoCompleteTextView.text?.clear()
-        binding.imagcode.setImageResource(R.mipmap.ic_launcher_foreground)
+        binding.imagcode.setImageResource(R.drawable.barcodespash)
         binding.textCodigo.text = getString(R.string.text_down_cod)
+    }
+
+    private fun shareBarcode(){
+        // Crear el bitmap de la vista
+        val bitmap = binding.imagcode.drawable.toBitmap()
+
+
+// Crear un archivo Uri para la imagen
+        val imagePath = MediaStore.Images.Media.insertImage(
+            contentResolver,
+            bitmap,
+            binding.textCodigo.text.toString(),
+            null)
+        val imageUri = Uri.parse(imagePath)
+        val editorpref= myprefrences.edit()
+        editorpref.putString("myUri",imagePath)
+        editorpref.commit()
+
+// Crear un intent para compartir la imagen
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "image/*"
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+
+// Mostrar el selector de aplicaciones para compartir
+        startActivityForResult(Intent.createChooser(shareIntent, "Compartir imagen"), COMPARTIR_REQUEST_CODE)
+
+
+
     }
 
     private fun verificarPermisos() {

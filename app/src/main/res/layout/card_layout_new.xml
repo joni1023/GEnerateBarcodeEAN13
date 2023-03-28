@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/text_label"
+            android:id="@+id/cl_text_label"
             android:layout_width="0dp"
             android:layout_height="14dp"
             android:ellipsize="marquee"
@@ -24,20 +24,18 @@
             android:singleLine="true"
             android:text="etiqueta"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#E83131"
+            android:textColor="#9A9A9A"
             android:textIsSelectable="false"
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_description"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_cod" />
 
         <ImageView
-            android:id="@+id/img_cod"
-            android:layout_width="0dp"
-            android:layout_height="53dp"
+            android:id="@+id/cl_img_cod"
+            android:layout_width="368dp"
+            android:layout_height="58dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +46,7 @@
             tools:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/text_cod"
+            android:id="@+id/cl_text_cod"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="none"
@@ -59,30 +57,54 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_cod" />
+            app:layout_constraintTop_toBottomOf="@+id/cl_img_cod" />
 
         <TextView
-            android:id="@+id/text_description"
+            android:id="@+id/cl_text_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Description"
+            android:textColor="#070000"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.407"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_cod" />
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_label" />
 
-        <TextView
-            android:id="@+id/Eliminar"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/cl_button_download"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deslice para eliminar"
-            android:textAlignment="center"
-            android:textColorHighlight="@color/ic_launcher_background"
-            android:textIsSelectable="false"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:text="Button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_label" />
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
+
+        <Button
+            android:id="@+id/cl_button_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Button"
+            app:layout_constraintStart_toEndOf="@+id/cl_button_download"
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
+
+        <Button
+            android:id="@+id/cl_button_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="Button"
+            app:layout_constraintEnd_toStartOf="@+id/cl_button_eedit"
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
+
+        <Button
+            android:id="@+id/cl_button_eedit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="Button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
