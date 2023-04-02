@@ -27,8 +27,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    buildFeatures {
-        viewBinding true
+    viewBinding{
+        enabled= true
     }
     kotlinOptions {
         jvmTarget = '1.8'

@@ -17,14 +17,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ajts.androidmads.library.ExcelToSQLite
 import com.ajts.androidmads.library.ExcelToSQLite.ImportListener
 import com.ajts.androidmads.library.SQLiteToExcel
 import com.example.generatorbarcode.R
-import com.example.generatorbarcode.core.SwipeToDeleteCallback
 import com.example.generatorbarcode.ui.adapter.BarcodeAdapter
 import com.example.generatorbarcode.data.database.BarcodeDao
 import com.example.generatorbarcode.data.database.BarcodeDatabase
@@ -47,18 +45,20 @@ class ListActivity : AppCompatActivity() {
     private lateinit var myrecycler:RecyclerView
     lateinit var sqliteToExcel: SQLiteToExcel
     private val VALOR_RETORNO = 1;
-    lateinit var mAdView : AdView
+    private lateinit var mAdView : AdView
     var directory_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
     val CHANEL_ID = "GeneradorEAN13"
+    private lateinit var binding: ActivityMylistBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     //viewBinding
-    val binding = ActivityMylistBinding.inflate(layoutInflater)
+    binding = ActivityMylistBinding.inflate(layoutInflater)
     setContentView(binding.root)
+    // fin binding
 
     createNotificationChannel()
-    //end viewBinding
+
     //toolbar
     setSupportActionBar(binding.topAppBar)
     supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -68,36 +68,17 @@ class ListActivity : AppCompatActivity() {
     val barcodeDB = BarcodeDatabase.getDatabase(this)
     barcodeDao = barcodeDB.getBarcodeDao()
 
+    //admob
     MobileAds.initialize(this) {}
-    mAdView = findViewById(R.id.adViewList)
+    mAdView = binding.adViewList
     val adRequest = AdRequest.Builder().build()
     mAdView.loadAd(adRequest)
+    //admob
 
     intiRecyclerView()
-    lifecycleScope.launch {
-        val listanew = barcodeDao.getAllBarcode()
-        listaoriginal = listanew
-        myrecycler.adapter = BarcodeAdapter(listaoriginal)
-    }
-    barcodeadpater = BarcodeAdapter(listaoriginal)
 
 
-    val swipeToDeleteCallback = object: SwipeToDeleteCallback(){
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val position = viewHolder.adapterPosition
-            val barcodedelete= listaoriginal[position];
-            var barcodeDb = BarcodeDatabase.getDatabase(this@ListActivity)
-            GlobalScope.launch {
-                barcodeDb.getBarcodeDao().deleteBarcode(barcodedelete)
-            }
-            Toast.makeText(this@ListActivity, "Codigo eliminado", Toast.LENGTH_SHORT).show()
-            listaoriginal.removeAt(position)
-            myrecycler.adapter?.notifyItemRemoved(position)
-        }
 
-    }
-    val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
-    itemTouchHelper.attachToRecyclerView(myrecycler)
 
     topAppBar.setOnMenuItemClickListener { menuItem ->
         when (menuItem.itemId) {
@@ -122,8 +103,6 @@ class ListActivity : AppCompatActivity() {
                     SQLiteToExcel.ExportListener {
                     override fun onStart() {}
                     override fun onCompleted(filePath: String) {
-//                        val intent =Intent(Intent.ACTION_GET_CONTENT)
-//                        intent.type = "application/vnd.ms-excel";
                         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                             addCategory(Intent.CATEGORY_OPENABLE)
                             type = "application/vnd.ms-excel"
@@ -167,10 +146,6 @@ class ListActivity : AppCompatActivity() {
             //Cancelado por el usuario
         }
         if (resultCode === RESULT_OK && requestCode === VALOR_RETORNO) {
-//            var file = ""
-//            data?.data?.also { uri ->
-//                file= uri.toString()
-//            }
             val uri = data?.data
             val file = File(uri!!.path) //create path from uri
 
@@ -183,10 +158,8 @@ class ListActivity : AppCompatActivity() {
             excelToSQLite.importFromFile(filePath, object : ImportListener {
                 override fun onStart() {}
                 override fun onCompleted(dbName: String) {
-                        lifecycleScope.launch {
-                            listaoriginal = barcodeDao.getAllBarcode()
-                            myrecycler.adapter = BarcodeAdapter(listaoriginal)
-                        }
+                        refreshAdapter()
+
                 }
                 override fun onError(e: Exception) {
                     Toast.makeText(this@ListActivity, e.message, Toast.LENGTH_SHORT).show()
@@ -212,10 +185,16 @@ class ListActivity : AppCompatActivity() {
             override fun onQueryTextChange(query: String?): Boolean {
                 lifecycleScope.launch {
                     val listanewsearch = barcodeDao.getSeach(query!!)
-                    listaoriginal = listanewsearch as MutableList<BarcodeEntity>
-                    myrecycler.adapter = BarcodeAdapter(listaoriginal)
+                    refreshAdapter(listanewsearch as MutableList<BarcodeEntity>)
+//                    listaoriginal = listanewsearch as MutableList<BarcodeEntity>
+//                    myrecycler.adapter = BarcodeAdapter(
+//                        barcodeList = listaoriginal,
+//                        onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
+//                        onClickDelete = {position -> onClickDelete(position)}
+//                    )
 
                 }
+
                 return true
             }
         })
@@ -224,10 +203,49 @@ class ListActivity : AppCompatActivity() {
     }
 
     fun intiRecyclerView(){
-        myrecycler = findViewById<RecyclerView>(R.id.recyclerID)
+        myrecycler = binding.recyclerID
         myrecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-    }
+        refreshAdapter()
 
+    }
+    private fun refreshAdapter(listBarcode: MutableList<BarcodeEntity> = mutableListOf()){
+        if (listBarcode.size != 0){
+            listaoriginal=listBarcode
+            barcodeadpater=  BarcodeAdapter(
+                barcodeList = listaoriginal,
+                onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
+                onClickDelete = {position -> onClickDelete(position)}
+            )
+            myrecycler.adapter = barcodeadpater
+        }else{
+            lifecycleScope.launch {
+                listaoriginal = barcodeDao.getAllBarcode()
+                barcodeadpater=  BarcodeAdapter(
+                    barcodeList = listaoriginal,
+                    onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
+                    onClickDelete = {position -> onClickDelete(position)}
+                )
+                myrecycler.adapter = barcodeadpater
+            }
+        }
+
+
+
+    }
+     private fun onItemSelect(barcodeEntity: BarcodeEntity){
+         Toast.makeText(this, barcodeEntity.descripcion, Toast.LENGTH_SHORT).show()
+     }
+    private fun onClickDelete(position:Int){
+        val barcodeRemoved = listaoriginal[position]
+        GlobalScope.launch {
+            barcodeDao.deleteBarcode(barcodeRemoved)
+        }
+        listaoriginal.removeAt(position)
+        myrecycler.adapter?.notifyItemRemoved(position)
+
+
+
+    }
 
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

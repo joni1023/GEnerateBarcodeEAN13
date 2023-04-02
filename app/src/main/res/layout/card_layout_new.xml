@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/cardview_default_elevation"
-    android:padding="1dp"
+    android:padding="5dp"
     app:contentPadding="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,41 +70,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_text_label" />
 
-        <Button
-            android:id="@+id/cl_button_download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
-
-        <Button
-            android:id="@+id/cl_button_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Button"
-            app:layout_constraintStart_toEndOf="@+id/cl_button_download"
-            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
-
-        <Button
-            android:id="@+id/cl_button_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:text="Button"
-            app:layout_constraintEnd_toStartOf="@+id/cl_button_eedit"
-            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
-
-        <Button
-            android:id="@+id/cl_button_eedit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="Button"
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="4"
+            android:rowCount="1"
+            android:useDefaultMargins="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_text_description" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_text_description">
+
+            <Button
+                android:id="@+id/cl_button_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <Button
+                android:id="@+id/cl_button_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cl_button_delete"
+                android:layout_width="70dp"
+                android:layout_height="52dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:icon="@drawable/delete_outline"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp" />
+
+            <Button
+                android:id="@+id/cl_button_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+        </GridLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
