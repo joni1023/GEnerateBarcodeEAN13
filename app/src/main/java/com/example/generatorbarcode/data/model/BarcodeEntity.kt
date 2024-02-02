@@ -14,9 +14,9 @@ data class BarcodeEntity(
     val valor :Long,
 
     @ColumnInfo(name = "etiqueta")
-    val etiqueta:String,
+    var etiqueta:String,
 
     @ColumnInfo(name= "descripcion")
-    val descripcion:String,
+    var descripcion:String,
 
 )

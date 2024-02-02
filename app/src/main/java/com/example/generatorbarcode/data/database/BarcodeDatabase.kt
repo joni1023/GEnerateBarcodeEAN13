@@ -23,7 +23,9 @@ abstract class BarcodeDatabase: RoomDatabase(){
                 return tempInstance
             }
             synchronized(this){
-                val instance= Room.databaseBuilder(context, BarcodeDatabase::class.java,"barcode2-db").build()
+                val instance= Room.databaseBuilder(context, BarcodeDatabase::class.java,"barcode2-db")
+                    .setJournalMode(JournalMode.AUTOMATIC)
+                    .build()
 
                 INSTANCE = instance
 

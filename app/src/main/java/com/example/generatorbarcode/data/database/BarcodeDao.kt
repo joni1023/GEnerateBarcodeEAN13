@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.generatorbarcode.data.model.BarcodeEntity
 
 @Dao
@@ -18,4 +19,6 @@ interface BarcodeDao {
     fun deleteBarcode(barcode: BarcodeEntity)
     @Query("SELECT * FROM barcode WHERE descripcion LIKE '%' || :query || '%'")
     suspend fun getSeach(query:String):List<BarcodeEntity>
+    @Update
+    suspend fun updateBarcode(barcode:BarcodeEntity)
 }

@@ -1,15 +1,11 @@
 package com.example.generatorbarcode.ui
 
 import android.Manifest
-import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,8 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
@@ -38,8 +34,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-
 class MainActivity : AppCompatActivity() {
+
+
+
     private lateinit var barcodeDb: BarcodeDatabase
     private var listaEtiquetas= arrayListOf<String>()
     lateinit var sqliteToExcel: SQLiteToExcel
@@ -50,6 +48,11 @@ class MainActivity : AppCompatActivity() {
     private val COMPARTIR_REQUEST_CODE = 123
     lateinit var binding : ActivityMainBinding
     lateinit var myprefrences: SharedPreferences
+    private val REQUEST_EXTERNAL_STORAGE = 1
+    private val PERMISSIONS_STORAGE = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
 
 
@@ -61,9 +64,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         myprefrences= this.getSharedPreferences("sa",Context.MODE_PRIVATE) ?: return
 
-        //end viewBinding
         verificarPermisos()
-        //toolbar
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         //end toolbar
@@ -202,6 +203,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun verificarPermisos() {
+        // Check if we have write permission
+        // Check if we have write permission
+        val permission: Int =
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                this,
+                PERMISSIONS_STORAGE,
+                REQUEST_EXTERNAL_STORAGE
+            )
+        }
         val permisoWrite = ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
         val permisoRead = ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
         if(permisoWrite == PackageManager.PERMISSION_GRANTED && permisoRead == PackageManager.PERMISSION_GRANTED ) {
@@ -240,6 +254,8 @@ class MainActivity : AppCompatActivity() {
         {
             R.id.itemlist -> {
                 val intent = Intent(this, ListActivity::class.java).apply {}
+
+                barcodeDb.close()
             startActivity(intent)
             }
             R.id.itemabout -> {

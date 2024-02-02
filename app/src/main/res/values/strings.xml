@@ -24,5 +24,8 @@
     <string name="text_down_cod">G3N3R4 7U C0D1G0</string>
     <string name="reset">Resetear</string>
     <string name="completar">Debe completar este campo</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="msj_delete">Estas seguro de eliminar el codigo </string>
 
 </resources>

@@ -20,7 +20,6 @@ class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
     val itemImage= itemView.findViewById<ImageView>(R.id.cl_img_cod)
     val itemCod=itemView.findViewById<TextView>(R.id.cl_text_cod)
     val btn_delete = itemView.findViewById<Button>(R.id.cl_button_delete)
-    val btn_download = itemView.findViewById<Button>(R.id.cl_button_download)
     val btn_edit = itemView.findViewById<Button>(R.id.cl_button_edit)
     val btn_share = itemView.findViewById<Button>(R.id.cl_button_share)
 
@@ -28,8 +27,9 @@ class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
 
     fun render(
         barcodeModel: BarcodeEntity,
-        onClickListener: (BarcodeEntity) -> Unit,
-        onClickDelete: (Int) -> Unit
+        onClickUpdate: (Int) -> Unit,
+        onClickDelete: (Int) -> Unit,
+        onClickShare: (Int) -> Unit
     ){
         itemDescripcion.text = barcodeModel.descripcion
         itemEtiqueta.text = barcodeModel.etiqueta
@@ -42,11 +42,9 @@ class BarcodeViewHolder(itemView: View): ViewHolder(itemView) {
             60
         )
         itemImage.setImageBitmap(bitmap)
-
-        btn_download.setOnClickListener { onClickListener(barcodeModel)}
-        btn_share.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
+        btn_share.setOnClickListener { onClickShare(bindingAdapterPosition) }
         btn_delete.setOnClickListener { onClickDelete(bindingAdapterPosition)}
-        btn_edit.setOnClickListener { Toast.makeText(itemView.context, "editar", Toast.LENGTH_SHORT).show() }
+        btn_edit.setOnClickListener { onClickUpdate(bindingAdapterPosition) }
 
     }
 

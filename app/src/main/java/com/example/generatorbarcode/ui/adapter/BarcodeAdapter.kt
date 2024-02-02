@@ -8,10 +8,11 @@ import com.example.generatorbarcode.core.BarcodeViewHolder
 import com.example.generatorbarcode.R
 
 class BarcodeAdapter (
-    private val barcodeList: List<BarcodeEntity>,
-    private val onClickListener:(BarcodeEntity)-> Unit,
-    private val onClickDelete:(Int)-> Unit
-): RecyclerView.Adapter<BarcodeViewHolder>() {
+    private var barcodeList: List<BarcodeEntity>,
+    private val onClickDelete: (Int) -> Unit,
+    private val onClickShare: (Int) -> Unit,
+    private val onClickUpdate: (Int) -> Unit,
+    ): RecyclerView.Adapter<BarcodeViewHolder>() {
 
 
 
@@ -23,9 +24,14 @@ class BarcodeAdapter (
 
     override fun onBindViewHolder(holder: BarcodeViewHolder, position: Int) {
         val item = barcodeList[position]
-        holder.render(item, onClickListener, onClickDelete)
+        holder.render(item, onClickUpdate, onClickDelete, onClickShare)
     }
     //tamaño de la lista
     override fun getItemCount(): Int = barcodeList.size
+
+    fun updateBarcodes (barcodeList : List<BarcodeEntity>){
+        this.barcodeList = barcodeList
+        notifyDataSetChanged()
+    }
 
 }

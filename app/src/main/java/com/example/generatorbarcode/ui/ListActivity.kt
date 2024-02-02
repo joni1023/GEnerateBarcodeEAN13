@@ -1,20 +1,33 @@
 package com.example.generatorbarcode.ui
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +36,7 @@ import com.ajts.androidmads.library.ExcelToSQLite
 import com.ajts.androidmads.library.ExcelToSQLite.ImportListener
 import com.ajts.androidmads.library.SQLiteToExcel
 import com.example.generatorbarcode.R
+import com.example.generatorbarcode.Utils
 import com.example.generatorbarcode.ui.adapter.BarcodeAdapter
 import com.example.generatorbarcode.data.database.BarcodeDao
 import com.example.generatorbarcode.data.database.BarcodeDatabase
@@ -31,10 +45,15 @@ import com.example.generatorbarcode.databinding.ActivityMylistBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_mylist.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class ListActivity : AppCompatActivity() {
@@ -42,6 +61,7 @@ class ListActivity : AppCompatActivity() {
     private lateinit var barcodeDao : BarcodeDao
     private lateinit var barcodeadpater: BarcodeAdapter
     private lateinit var listaoriginal:MutableList<BarcodeEntity>
+    private var listaEtiquetas= arrayListOf<String>()
     private lateinit var myrecycler:RecyclerView
     lateinit var sqliteToExcel: SQLiteToExcel
     private val VALOR_RETORNO = 1;
@@ -49,15 +69,25 @@ class ListActivity : AppCompatActivity() {
     var directory_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
     val CHANEL_ID = "GeneradorEAN13"
     private lateinit var binding: ActivityMylistBinding
+    lateinit var myprefrences: SharedPreferences
+    private val COMPARTIR_REQUEST_CODE = 123
+    val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0
 
+
+
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     //viewBinding
     binding = ActivityMylistBinding.inflate(layoutInflater)
     setContentView(binding.root)
+        myprefrences= this.getSharedPreferences("sa",Context.MODE_PRIVATE) ?: return
     // fin binding
 
     createNotificationChannel()
+
+
+
 
     //toolbar
     setSupportActionBar(binding.topAppBar)
@@ -67,6 +97,9 @@ class ListActivity : AppCompatActivity() {
     listaoriginal= mutableListOf()
     val barcodeDB = BarcodeDatabase.getDatabase(this)
     barcodeDao = barcodeDB.getBarcodeDao()
+        lifecycleScope.launch {
+            listaEtiquetas.addAll(barcodeDB.getBarcodeDao().getEtiquetas())
+        }
 
     //admob
     MobileAds.initialize(this) {}
@@ -83,6 +116,7 @@ class ListActivity : AppCompatActivity() {
     topAppBar.setOnMenuItemClickListener { menuItem ->
         when (menuItem.itemId) {
             R.id.importDB -> {
+
                 intent = Intent(Intent.ACTION_GET_CONTENT);
                 intent.type = "application/vnd.ms-excel";
                 startActivityForResult(Intent.createChooser(intent, "Choose File"), VALOR_RETORNO);
@@ -90,6 +124,7 @@ class ListActivity : AppCompatActivity() {
             }
             R.id.exportDB -> {
                 //export---------------------------------------
+
                 val file = File(directory_path)
                 if (!file.exists()) {
                     Toast.makeText(this@ListActivity, "no existe el directotio", Toast.LENGTH_SHORT).show();
@@ -111,7 +146,7 @@ class ListActivity : AppCompatActivity() {
                             // system file picker when it loads.
                             putExtra(DocumentsContract.EXTRA_INITIAL_URI, directory_path.toUri())
                         }
-                        val pendingIntent = PendingIntent.getActivity(this@ListActivity,0,intent,0)
+                        val pendingIntent = PendingIntent.getActivity(this@ListActivity,0,intent,PendingIntent.FLAG_MUTABLE)
                         var builder = NotificationCompat.Builder(this@ListActivity, CHANEL_ID)
                             .setSmallIcon(R.drawable.ic_launcher_barcode_barcode)
                             .setContentTitle(getString(R.string.title_notification))
@@ -155,7 +190,7 @@ class ListActivity : AppCompatActivity() {
 
             //import
             val excelToSQLite = ExcelToSQLite(applicationContext, "barcode2-db");
-            excelToSQLite.importFromFile(filePath, object : ImportListener {
+            excelToSQLite.importFromFile(directory_path, object : ImportListener {
                 override fun onStart() {}
                 override fun onCompleted(dbName: String) {
                         refreshAdapter()
@@ -170,6 +205,19 @@ class ListActivity : AppCompatActivity() {
         }
 
 
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE -> {
+                // Comprueba si el permiso fue concedido
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permiso concedido, puedes realizar la operación
+                    // Guardar el Bitmap en el almacenamiento externo, etc.
+                } else {
+                    // Permiso denegado, manejar según sea necesario
+                }
+            }
+        }
     }
 
     //Toolbar and menu
@@ -186,12 +234,6 @@ class ListActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val listanewsearch = barcodeDao.getSeach(query!!)
                     refreshAdapter(listanewsearch as MutableList<BarcodeEntity>)
-//                    listaoriginal = listanewsearch as MutableList<BarcodeEntity>
-//                    myrecycler.adapter = BarcodeAdapter(
-//                        barcodeList = listaoriginal,
-//                        onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
-//                        onClickDelete = {position -> onClickDelete(position)}
-//                    )
 
                 }
 
@@ -205,46 +247,155 @@ class ListActivity : AppCompatActivity() {
     fun intiRecyclerView(){
         myrecycler = binding.recyclerID
         myrecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        refreshAdapter()
-
-    }
-    private fun refreshAdapter(listBarcode: MutableList<BarcodeEntity> = mutableListOf()){
-        if (listBarcode.size != 0){
-            listaoriginal=listBarcode
+        lifecycleScope.launch {
+            listaoriginal = barcodeDao.getAllBarcode()
             barcodeadpater=  BarcodeAdapter(
                 barcodeList = listaoriginal,
-                onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
-                onClickDelete = {position -> onClickDelete(position)}
+                onClickUpdate = {position -> onClickUpdate(position)},
+                onClickDelete = {position -> onClickDelete(position)},
+                onClickShare = {position -> onClickShare(position)}
             )
             myrecycler.adapter = barcodeadpater
-        }else{
-            lifecycleScope.launch {
-                listaoriginal = barcodeDao.getAllBarcode()
-                barcodeadpater=  BarcodeAdapter(
-                    barcodeList = listaoriginal,
-                    onClickListener = {barcodeEntity ->onItemSelect(barcodeEntity)},
-                    onClickDelete = {position -> onClickDelete(position)}
-                )
-                myrecycler.adapter = barcodeadpater
+        }
+    }
+
+    private fun onClickDonwload(position: Int) {
+        Toast.makeText(this, "donload", Toast.LENGTH_SHORT).show()
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Si no tienes el permiso, solicítalo
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE)
+        } else {
+            // Si ya tienes el permiso, puedes continuar con la operación
+            // Guardar el Bitmap en el almacenamiento externo, etc.
+        }
+        var barcodeU = listaoriginal[position]
+        val barcodeEncoder = BarcodeEncoder()
+        val bitmap = barcodeEncoder.encodeBitmap(
+            barcodeU.valor.toString(),
+            BarcodeFormat.EAN_13,
+            450,
+            60
+        )
+
+        val estadoAlmacenamiento = Environment.getExternalStorageState()
+
+        if (estadoAlmacenamiento == Environment.MEDIA_MOUNTED) {
+            // Obtener el directorio de almacenamiento externo
+            val directorioAlmacenamientoExterno = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+            if (directorioAlmacenamientoExterno != null) {
+                // Crear un archivo en el directorio de almacenamiento externo
+                val archivo = File(directorioAlmacenamientoExterno, "nombreArchivo")
+
+                try {
+                    // Abrir un OutputStream y guardar el Bitmap
+                    val stream = FileOutputStream(archivo)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    stream.flush()
+                    stream.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }
 
+    }
+
+    private fun onClickUpdate(position : Int) {
+
+        var barcodeU = listaoriginal[position]
+        val view = LayoutInflater.from(this).inflate(R.layout.update_dialog,null)
+        val inputTextDescription = view.findViewById<EditText>(R.id.textdescriocionupdate)
+        val cometiquetas = view.findViewById<AutoCompleteTextView>(R.id.aUpdate)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line,listaEtiquetas)
+        cometiquetas.setAdapter(adapter)
+        inputTextDescription.setText(barcodeU.descripcion)
+        cometiquetas.setText(barcodeU.etiqueta)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Modificar codigo de barra")
+            .setMessage("Desea modificar el codigo numero ${barcodeU.valor.toString()}?")
+            .setView(view)
+            .setPositiveButton(R.string.accept){ dialog , which ->
+                barcodeU.descripcion=inputTextDescription.text.toString()
+                barcodeU.etiqueta = cometiquetas.text.toString()
+                lifecycleScope.launch {
+                    try {
+                        barcodeDao.updateBarcode(barcodeU)
+                    }catch (e:Exception){
+                        Toast.makeText(this@ListActivity, "error update", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                myrecycler.adapter?.notifyItemChanged(position)
+                Toast.makeText(this, "Se modifico correctamente", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.cancel){dialog, which ->
+                Toast.makeText(this, "Cancelo modificacion", Toast.LENGTH_SHORT).show()
+            }
+            .show()
 
 
+
+
+
+
+    }
+
+    private fun onClickShare(position: Int) {
+        val barcodeEncoder = BarcodeEncoder()
+        val bitmap = barcodeEncoder.encodeBitmap(
+            listaoriginal[position].valor.toString(),
+            BarcodeFormat.EAN_13,
+            450,
+            60
+        )
+// Crear un archivo Uri para la imagen
+        val imagePath = MediaStore.Images.Media.insertImage(
+            contentResolver,
+            bitmap,
+            listaoriginal[position].descripcion.toString(),
+            null)
+        val imageUri = Uri.parse(imagePath)
+        val editorpref= myprefrences.edit()
+        editorpref.putString("myUri",imagePath)
+        editorpref.commit()
+
+// Crear un intent para compartir la imagen
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "image/*"
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+
+// Mostrar el selector de aplicaciones para compartir
+        startActivityForResult(Intent.createChooser(shareIntent, "Compartir imagen"), COMPARTIR_REQUEST_CODE)
+
+    }
+
+    private fun refreshAdapter(listBarcode: MutableList<BarcodeEntity> = mutableListOf()){
+        barcodeadpater.updateBarcodes(listBarcode)
     }
      private fun onItemSelect(barcodeEntity: BarcodeEntity){
          Toast.makeText(this, barcodeEntity.descripcion, Toast.LENGTH_SHORT).show()
      }
     private fun onClickDelete(position:Int){
         val barcodeRemoved = listaoriginal[position]
-        GlobalScope.launch {
-            barcodeDao.deleteBarcode(barcodeRemoved)
-        }
-        listaoriginal.removeAt(position)
-        myrecycler.adapter?.notifyItemRemoved(position)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Eliminar codigo")
+            .setMessage(resources.getString(R.string.msj_delete) +" "+ barcodeRemoved.valor )
 
-
-
+            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, which ->
+                // Respond to negative button press
+            }
+            .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                GlobalScope.launch {
+                    barcodeDao.deleteBarcode(barcodeRemoved)
+                }
+                listaoriginal.removeAt(position)
+                myrecycler.adapter?.notifyItemRemoved(position)
+            }
+            .show()
     }
 
     private fun createNotificationChannel() {
